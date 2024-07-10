@@ -1,0 +1,48 @@
+.grid {
+    width: 560px;
+    height: 560px;
+    border: black 4px solid;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.pacDot {
+    color: green;
+}
+
+.ponto {
+    font-size: 20px;
+}
+
+.parede {
+    background-color: blue;
+}
+
+.vazio,
+.covilDosFantasmas {
+    background-color: white;
+}
+
+.powerPellet {
+    color: green;
+}
+
+.powerPelletPonto {
+    font-size: 30px;
+}
+
+.grid>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.pacman {
+    color: rgb(0, 0, 0);
+    font-size: 40px;
+    padding-bottom: 9px;
+}
