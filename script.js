@@ -1,82 +1,69 @@
 var grid = document.querySelector(".grid");
 var score = document.querySelector(".score");
 var level = document.querySelector(".level");
+var pacman = document.querySelector(".grid .pacman");
+var intervaloAtual = null;
+var contadorDeIntervalos = 0;
 
-/* O QUE CADA QUADRADO REPRESENTARÁ INICIALMENTE:
-        0 = PAC-DOTS;
-        1 = PAREDE/WALL;
-        2 = COVIL DOS FANTASMAS;
-        3 = POWER-PELLET;
-        4 = VAZIO;
+//MOVIMENTAR PACMAN.
+function movimentoDoPacman(proximaDiv) {
+    /*SE O PACMAN JÁ ESTIVER INDO EM UMA DIREÇÃO, ENTÃO PARE O INTERVALO E
+    E INCIE UM OUTRO NOVO INTERVALO COM UMA NOVA DIREÇÃO, DE ACORDO COM A SETA CLICADA*/
+    contadorDeIntervalos += 1;
+    if (contadorDeIntervalos > 1) {
+        contadorDeIntervalos = 1;
+        clearInterval(intervaloAtual);
+    };
 
-*/
-const layout = [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 3, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 3, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 2, 2, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-    1, 3, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 3, 1,
-    1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1,
-    1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-];
+    /*O PACMAN IRÁ SEGUIR INFINIMANTE PARA O LADO EM QUE A SETA FOI CLICADO, 
+    MAS, IRÁ PARAR QUANDO A PROXIMADIV DA DIREÇÃO DA SETA TIVER UMA PAREDE OU
+    QUANDO A FUNÇÃO FOR CHAMADA OUTRA VEZ, PARA A DIREÇÃO DO PACMAN*/
+    intervaloAtual = setInterval(() => {
+        let idDivPaiDoPacman = Number(pacman.parentElement.id);
+        if (idDivPaiDoPacman === 364) {
+            grid.children[391].appendChild(pacman);
+        } else if (idDivPaiDoPacman === 391) {
+            grid.children[364].appendChild(pacman);
+        }
 
-function criarLayoutDoGame() {
-    layout.forEach(function(quadradoAtual, indice) {
-        const novoQuadrado = document.createElement("div");
-        novoQuadrado.id = indice;
-        grid.appendChild(novoQuadrado);
-        if (quadradoAtual === 0) {
-            const novoQuadradoPonto = document.createElement("i");
-            novoQuadrado.classList.add("pacDot");
-            novoQuadradoPonto.classList.add("ponto");
-            novoQuadradoPonto.innerHTML = "•";
-            novoQuadrado.appendChild(novoQuadradoPonto);
+        if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("vazio")) {
+            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
+        };
+        if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("pacDot")) {
+            grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("pacDot");
+            grid.children[idDivPaiDoPacman + proximaDiv].classList.add("vazio");
+            grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
+            score.innerHTML = Number(score.textContent) + 10;
+            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
+        };
+        if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("powerPellet")) {
+            grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("powerPellet");
+            grid.children[idDivPaiDoPacman + proximaDiv].classList.add("vazio");
+            grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
+            score.innerHTML = Number(score.textContent) + 50;
+            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
         }
-        else if (quadradoAtual === 1) {
-            novoQuadrado.classList.add("parede");
-        }
-        else if (quadradoAtual === 2) {
-            novoQuadrado.classList.add("covilDosFantasmas");
-        }
-        else if (quadradoAtual === 3) {
-            const novoQuadradoPowerPellet = document.createElement("i");
-            novoQuadradoPowerPellet.classList.add("powerPelletPonto");
-            novoQuadradoPowerPellet.innerHTML = "●";
-            novoQuadrado.classList.add("powerPellet");
-            novoQuadrado.appendChild(novoQuadradoPowerPellet);
-        }
-        else if (quadradoAtual === 4) {
-            novoQuadrado.classList.add("vazio");
-        }
-        
-        if (indice === 489) {
-            const pacman = document.createElement("i");
-            pacman.classList.add("pacman");
-            pacman.innerHTML = "■";
-            novoQuadrado.appendChild(pacman);
-        }
-});
+    }, 250);
 };
 
-criarLayoutDoGame();
+
+//EVENTOS PARA ESCUTAR SETAS DO TECLADO E, DEPOIS, CHAMAR A FUNÇÃO 'movimentoDoPacman' DE ACORDO COM A SETA PRESSIONADO.
+document.addEventListener('keyup', function moverPacMan(event) {
+    switch (event.key) {
+        case "ArrowUp":
+            movimentoDoPacman(-28);
+            break;
+        
+        case "ArrowDown":
+            movimentoDoPacman(28);
+            break;
+        
+        case "ArrowRight":
+            movimentoDoPacman(1);
+            break;
+        
+        case "ArrowLeft":
+            movimentoDoPacman(-1);
+            break;
+    };
+});
