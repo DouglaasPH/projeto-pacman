@@ -1,4 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@700&display=swap');
+
+body {
+    background-color: gray;
+    display: flex;
+    flex-direction: column;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.placar {
+    display: flex;
+    justify-content: space-evenly;
+    width: 41%;
+    color: white;
+    font-size: 3vh;
+    font-family: "Exo 2", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    border: 4px solid black;
+    background-color: black;
+}
+
 .grid {
+    background-color: black;
     width: 560px;
     height: 560px;
     border: black 4px solid;
@@ -7,7 +35,8 @@
 }
 
 .pacDot {
-    color: green;
+    background-color: black;
+    color: white;
 }
 
 .ponto {
@@ -20,11 +49,12 @@
 
 .vazio,
 .covilDosFantasmas {
-    background-color: white;
+    background-color: black;
 }
 
 .powerPellet {
-    color: green;
+    background-color: black;
+    color: white;
 }
 
 .powerPelletPonto {
@@ -42,7 +72,7 @@
 }
 
 .pacman {
-    color: rgb(0, 0, 0);
-    font-size: 40px;
-    padding-bottom: 9px;
+    color: yellow;
+    font-size: 45px;
+    padding-bottom: 5px;
 }
