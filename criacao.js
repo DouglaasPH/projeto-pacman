@@ -71,9 +71,9 @@ function criarLayoutDoGame() {
         }
         
         if (indice === 489) {
-            const pacman = document.createElement("span");
+            let pacman = document.createElement("img");
+            pacman.src = "Direçoes para o pacman/pacman-normal.png";
             pacman.classList.add("pacman");
-            pacman.innerHTML = "●";
             novoQuadrado.appendChild(pacman);
         }
 });

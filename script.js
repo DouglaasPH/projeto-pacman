@@ -4,6 +4,9 @@ var level = document.querySelector(".level");
 var pacman = document.querySelector(".grid .pacman");
 var intervaloAtual = null;
 var contadorDeIntervalos = 0;
+var quadradosParaFantasmasPoderemAvancar = [-1, 1, -28, 28];
+
+var escolherQuadrado = Math.floor(Math.random() * quadradosParaFantasmasPoderemAvancar.length);
 
 //MOVIMENTAR PACMAN.
 function movimentoDoPacman(proximaDiv) {
@@ -20,30 +23,57 @@ function movimentoDoPacman(proximaDiv) {
     QUANDO A FUNÇÃO FOR CHAMADA OUTRA VEZ, PARA A DIREÇÃO DO PACMAN*/
     intervaloAtual = setInterval(() => {
         let idDivPaiDoPacman = Number(pacman.parentElement.id);
+
         if (idDivPaiDoPacman === 364) {
             grid.children[391].appendChild(pacman);
         } else if (idDivPaiDoPacman === 391) {
             grid.children[364].appendChild(pacman);
         }
 
+        setTimeout(() => {
+            pacman.src = "Direçoes para o pacman/pacman-normal.png";
+        }, 100);   
+
         if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("vazio")) {
-            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
+            decidirLadoDoPacman(idDivPaiDoPacman);
         };
         if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("pacDot")) {
+            grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
             grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("pacDot");
             grid.children[idDivPaiDoPacman + proximaDiv].classList.add("vazio");
-            grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
+            decidirLadoDoPacman(idDivPaiDoPacman);
             score.innerHTML = Number(score.textContent) + 10;
-            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
         };
         if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("powerPellet")) {
-            grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("powerPellet");
-            grid.children[idDivPaiDoPacman + proximaDiv].classList.add("vazio");
             grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
+            grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("powerPellet");
+            decidirLadoDoPacman(idDivPaiDoPacman);
             score.innerHTML = Number(score.textContent) + 50;
-            grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman)
         }
-    }, 250);
+    }, 200);
+
+    function decidirLadoDoPacman(idDivPaiDoPacman) {
+
+        if (proximaDiv === 1) {
+            setTimeout(() => {
+                pacman.src = "Direçoes para o pacman/pacman-para-direita.png";
+            }, 1);   
+        } else if (proximaDiv === -1) {
+            setTimeout(() => {
+                pacman.src = "Direçoes para o pacman/pacman-para-esquerda.png";    
+            }, 1);
+        } else if (proximaDiv === 28) {
+            setTimeout(() => {
+                pacman.src = "Direçoes para o pacman/pacman-para-baixo.png";    
+            }, 1);
+        } else if (proximaDiv === -28) {
+            setTimeout(() => {
+                pacman.src = "Direçoes para o pacman/pacman-para-cima.png";    
+            }, 1);
+        }
+
+        grid.children[idDivPaiDoPacman + proximaDiv].appendChild(pacman);
+    };
 };
 
 

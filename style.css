@@ -4,6 +4,7 @@ body {
     background-color: gray;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 * {
@@ -23,6 +24,18 @@ body {
     font-style: normal;
     border: 4px solid black;
     background-color: black;
+}
+
+.quantidade-de-vidas {
+    width: 40.5%;
+    height: 1%;
+    background-color: black;
+    padding-left: 15px;
+
+}
+
+.vidas {
+    height: 15px;
 }
 
 .grid {
@@ -72,7 +85,6 @@ body {
 }
 
 .pacman {
-    color: yellow;
-    font-size: 45px;
-    padding-bottom: 5px;
+    width: 90%;
+    height: 90%;
 }
