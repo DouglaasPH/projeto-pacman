@@ -84,7 +84,11 @@ body {
     height: 20px;
 }
 
-.pacman {
+.pacman,
+.fantasma-vermelho,
+.fantasma-ciano,
+.fantasma-rosa,
+.fantasma-amarelo {
     width: 90%;
     height: 90%;
 }

@@ -76,6 +76,30 @@ function criarLayoutDoGame() {
             pacman.classList.add("pacman");
             novoQuadrado.appendChild(pacman);
         }
+        if (indice === 294) {
+            let fantasma = document.createElement("img");
+            fantasma.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";
+            fantasma.classList.add("fantasma-vermelho");
+            novoQuadrado.appendChild(fantasma);
+        }
+        if (indice === 347) {
+            let fantasma = document.createElement("img");
+            fantasma.src = "Direçoes para os fantasmas/fantasma-ciano-baixo.png";
+            fantasma.classList.add("fantasma-ciano");
+            novoQuadrado.appendChild(fantasma);
+        }
+        if (indice === 349) {
+            let fantasma = document.createElement("img");
+            fantasma.src = "Direçoes para os fantasmas/fantasma-rosa-baixo.png";
+            fantasma.classList.add("fantasma-rosa");
+            novoQuadrado.appendChild(fantasma);
+        }
+        if (indice === 351) {
+            let fantasma = document.createElement("img");
+            fantasma.src = "Direçoes para os fantasmas/fantasma-amarelo-baixo.png";
+            fantasma.classList.add("fantasma-amarelo");
+            novoQuadrado.appendChild(fantasma);
+        }
 });
 };
 

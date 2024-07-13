@@ -2,21 +2,40 @@ var grid = document.querySelector(".grid");
 var score = document.querySelector(".score");
 var level = document.querySelector(".level");
 var pacman = document.querySelector(".grid .pacman");
+var fantasmaVermelho = document.querySelector(".grid .fantasma-vermelho");
+var fantasmaCiano = document.querySelector(".grid .fantasma-ciano");
+var fantasmaRosa = document.querySelector(".grid .fantasma-rosa");
+var fantasmaAmarelo = document.querySelector(".grid .fantasma-amarelo");
 var intervaloAtual = null;
 var contadorDeIntervalos = 0;
-var quadradosParaFantasmasPoderemAvancar = [-1, 1, -28, 28];
 
-var escolherQuadrado = Math.floor(Math.random() * quadradosParaFantasmasPoderemAvancar.length);
+//TODO: MOVIMENTAÇÃO DOS FANTASMAS
+function movimentoDosFantasmas() {
+    let quadradosParaFantasmasPoderemAvancar = [-1, 1, -28, 28]; 
+    let idDivPaiDoVermelho = Number(fantasmaVermelho.parentElement.id);
+
+
+    var moverFantasmaVermelho = setInterval(() => {
+        let escolherQuadrado = Math.floor(Math.random() * quadradosParaFantasmasPoderemAvancar.length);    
+        if (grid.children[idDivPaiDoVermelho + quadradosParaFantasmasPoderemAvancar[escolherQuadrado]].classList.contains("vazio")) {
+            console.log("hello");
+        }
+    }, 200);
+};
+//movimentoDosFantasmas();
 
 //MOVIMENTAR PACMAN.
 function movimentoDoPacman(proximaDiv) {
     /*SE O PACMAN JÁ ESTIVER INDO EM UMA DIREÇÃO, ENTÃO PARE O INTERVALO E
     E INCIE UM OUTRO NOVO INTERVALO COM UMA NOVA DIREÇÃO, DE ACORDO COM A SETA CLICADA*/
-    contadorDeIntervalos += 1;
-    if (contadorDeIntervalos > 1) {
-        contadorDeIntervalos = 1;
-        clearInterval(intervaloAtual);
+    function pararIntervalo() {
+        contadorDeIntervalos += 1;
+        if (contadorDeIntervalos > 1) {
+            contadorDeIntervalos = 1;
+            clearInterval(intervaloAtual);
+        };
     };
+    pararIntervalo();
 
     /*O PACMAN IRÁ SEGUIR INFINIMANTE PARA O LADO EM QUE A SETA FOI CLICADO, 
     MAS, IRÁ PARAR QUANDO A PROXIMADIV DA DIREÇÃO DA SETA TIVER UMA PAREDE OU
@@ -26,29 +45,36 @@ function movimentoDoPacman(proximaDiv) {
 
         if (idDivPaiDoPacman === 364) {
             grid.children[391].appendChild(pacman);
+            proximaDiv = -1;
+            idDivPaiDoPacman = 391;
         } else if (idDivPaiDoPacman === 391) {
             grid.children[364].appendChild(pacman);
+            proximaDiv = 1;
+            idDivPaiDoPacman = 364;
         }
 
         setTimeout(() => {
             pacman.src = "Direçoes para o pacman/pacman-normal.png";
-        }, 100);   
+        }, 100);
 
         if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("vazio")) {
             decidirLadoDoPacman(idDivPaiDoPacman);
-        };
-        if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("pacDot")) {
+        }
+        else if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("pacDot")) {
             grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
             grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("pacDot");
             grid.children[idDivPaiDoPacman + proximaDiv].classList.add("vazio");
             decidirLadoDoPacman(idDivPaiDoPacman);
             score.innerHTML = Number(score.textContent) + 10;
-        };
-        if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("powerPellet")) {
+        }
+        else if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("powerPellet")) {
             grid.children[idDivPaiDoPacman + proximaDiv].innerHTML = "";
             grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("powerPellet");
             decidirLadoDoPacman(idDivPaiDoPacman);
             score.innerHTML = Number(score.textContent) + 50;
+        }
+        else if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("parede")) {
+            pararIntervalo();
         }
     }, 200);
 
