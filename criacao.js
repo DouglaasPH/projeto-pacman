@@ -1,6 +1,8 @@
+export var quadradosPretos = [];
 var grid = document.querySelector(".grid");
 var score = document.querySelector(".score");
 var level = document.querySelector(".level");
+
 
 /* O QUE CADA QUADRADO REPRESENTARÁ INICIALMENTE:
         0 = PAC-DOTS;
@@ -52,6 +54,7 @@ function criarLayoutDoGame() {
             novoQuadradoPonto.classList.add("ponto");
             novoQuadradoPonto.innerHTML = "•";
             novoQuadrado.appendChild(novoQuadradoPonto);
+            quadradosPretos.push(indice);
         }
         else if (quadradoAtual === 1) {
             novoQuadrado.classList.add("parede");
@@ -65,9 +68,11 @@ function criarLayoutDoGame() {
             novoQuadradoPowerPellet.innerHTML = "●";
             novoQuadrado.classList.add("powerPellet");
             novoQuadrado.appendChild(novoQuadradoPowerPellet);
+            quadradosPretos.push(indice);
         }
         else if (quadradoAtual === 4) {
             novoQuadrado.classList.add("vazio");
+            quadradosPretos.push(indice);
         }
         
         if (indice === 489) {
@@ -79,6 +84,7 @@ function criarLayoutDoGame() {
         if (indice === 294) {
             let fantasma = document.createElement("img");
             fantasma.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";
+            fantasma.setAttribute("direcao", "esquerda");
             fantasma.classList.add("fantasma-vermelho");
             novoQuadrado.appendChild(fantasma);
         }
@@ -86,21 +92,24 @@ function criarLayoutDoGame() {
             let fantasma = document.createElement("img");
             fantasma.src = "Direçoes para os fantasmas/fantasma-ciano-baixo.png";
             fantasma.classList.add("fantasma-ciano");
+            fantasma.setAttribute("direcao", "baixo");
             novoQuadrado.appendChild(fantasma);
         }
         if (indice === 349) {
             let fantasma = document.createElement("img");
             fantasma.src = "Direçoes para os fantasmas/fantasma-rosa-baixo.png";
+            fantasma.setAttribute("direcao", "baixo");
             fantasma.classList.add("fantasma-rosa");
             novoQuadrado.appendChild(fantasma);
         }
         if (indice === 351) {
             let fantasma = document.createElement("img");
             fantasma.src = "Direçoes para os fantasmas/fantasma-amarelo-baixo.png";
+            fantasma.setAttribute("direcao", "baixo");
             fantasma.classList.add("fantasma-amarelo");
             novoQuadrado.appendChild(fantasma);
         }
-});
+    });
 };
 
 criarLayoutDoGame();
