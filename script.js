@@ -11,29 +11,12 @@ var intervaloAtual = null;
 var contadorDeIntervalos = 0;
 
 
-function adicionarERemoverPowerPelletsEPacDots(qualAdicionar, fantasmaAtual) {
-    if (qualAdicionar === "pacDot") {
-        const novoQuadradoPonto = document.createElement("span");
-            novoQuadradoPonto.classList.add("ponto");
-            novoQuadradoPonto.innerHTML = "•";
-            fantasmaAtual.parentElement.appendChild(novoQuadradoPonto);
-    }
-    else if (qualAdicionar === "powerPellet") {
-        const novoQuadradoPowerPellet = document.createElement("span");
-            novoQuadradoPowerPellet.classList.add("powerPelletPonto");
-            novoQuadradoPowerPellet.innerHTML = "●";
-            fantasmaAtual.parentElement.appendChild(novoQuadradoPowerPellet);
-
-
-    }
-
-}
-
-//TESTE: MOVIMENTAÇÃO DOS FANTASMAS
-//TODO: QUANDO O SCORE ESTIVER EM MÉDIA 1270, FAÇA COM QUE O FANTASMA VERMELHO VÁ DIRETAMENTE ATRÁS DO PACMAN
+//TESTE: MOVIMENTAÇÃO DOS FANTASMAS (FALTA O CIANO E AMARELO)
+//TODO: QUANDO O PACMAN TIVER COMIDO 60 PAC-DOTS, FAÇA COM QUE TODOS OS FANTASMAS VÁ DIRETAMENTE ATRÁS DO PACMAN
 //TODO: FUNCIONALIDADE PARA QUANDO O PACMAN COMER O POWER-PELLET (efeito dura 10 segundos)
 //TODO: MATAR PACMAN
 //TODO: FANTASMA MORRER, RETORNAR AO COVIL E DEPOIS SAIR DO COVIL 
+//TODO: FANTASMAS CONSEGUIR IR DO 391 AO 364, E VICE-VERSA
 function movimentarFantasmaVermelho() {
     var FantasmaVermelhoEmMovimento = setInterval(() => {
         let posicaoAtualDoVermelho = Number(fantasmaVermelho.parentElement.id);
@@ -77,15 +60,9 @@ function movimentarFantasmaVermelho() {
         if (direcaoDoVermelho === "esquerda") {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoVermelho - 1);
             if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
-                if (fantasmaVermelho.parentElement.classList.contains("pacDot")) adicionarERemoverPowerPelletsEPacDots("pacDot", fantasmaVermelho);
-                if (fantasmaVermelho.parentElement.classList.contains("powerPellet")) adicionarERemoverPowerPelletsEPacDots("powerPellet", fantasmaVermelho);
-
-                if (grid.children[posicaoAtualDoVermelho - 1].length !== 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";                    
-                    grid.children[posicaoAtualDoVermelho - 1].innerHTML = "";
-                    grid.children[posicaoAtualDoVermelho - 1].appendChild(fantasmaVermelho);
-                    fantasmaVermelho.setAttribute("direcao", "esquerda");
-                }
+                fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";                                
+                grid.children[posicaoAtualDoVermelho - 1].appendChild(fantasmaVermelho);
+                fantasmaVermelho.setAttribute("direcao", "esquerda");
             }
             if (grid.children[quadradosPretos[futuraPosicao] - 1].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] - 1].classList.contains("covilDosFantasmas")) {
                 fantasmaVermelho.setAttribute("direcao", "mudar a direçao esquerda");
@@ -94,15 +71,10 @@ function movimentarFantasmaVermelho() {
         else if (direcaoDoVermelho === "direita") {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoVermelho + 1);
             if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
-                if (fantasmaVermelho.parentElement.classList.contains("pacDot")) adicionarERemoverPowerPelletsEPacDots("pacDot", fantasmaVermelho);
-                if (fantasmaVermelho.parentElement.classList.contains("powerPellet")) adicionarERemoverPowerPelletsEPacDots("powerPellet", fantasmaVermelho);
+                fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-direita.png";
+                grid.children[posicaoAtualDoVermelho + 1].appendChild(fantasmaVermelho);
+                fantasmaVermelho.setAttribute("direcao", "direita");
 
-                if (grid.children[posicaoAtualDoVermelho + 1].length !== 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-direita.png";
-                    grid.children[posicaoAtualDoVermelho + 1].innerHTML = "";
-                    grid.children[posicaoAtualDoVermelho + 1].appendChild(fantasmaVermelho);
-                    fantasmaVermelho.setAttribute("direcao", "direita");
-                }
             }
             if (grid.children[quadradosPretos[futuraPosicao] + 1].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] + 1].classList.contains("covilDosFantasmas")) {
                 fantasmaVermelho.setAttribute("direcao", "mudar a direçao direita");
@@ -111,15 +83,9 @@ function movimentarFantasmaVermelho() {
         else if (direcaoDoVermelho === "cima") {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoVermelho - 28);
             if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
-                if (fantasmaVermelho.parentElement.classList.contains("pacDot")) adicionarERemoverPowerPelletsEPacDots("pacDot", fantasmaVermelho);
-                if (fantasmaVermelho.parentElement.classList.contains("powerPellet")) adicionarERemoverPowerPelletsEPacDots("powerPellet", fantasmaVermelho);
-
-                if (grid.children[posicaoAtualDoVermelho - 28].length !== 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-cima.png";
-                     grid.children[posicaoAtualDoVermelho - 28].innerHTML = "";
-                    grid.children[posicaoAtualDoVermelho - 28].appendChild(fantasmaVermelho);
-                    fantasmaVermelho.setAttribute("direcao", "cima");
-                }
+                fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-cima.png";
+                grid.children[posicaoAtualDoVermelho - 28].appendChild(fantasmaVermelho);
+                fantasmaVermelho.setAttribute("direcao", "cima");
             }
             if (grid.children[quadradosPretos[futuraPosicao] - 28].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] - 28].classList.contains("covilDosFantasmas")) {
                 fantasmaVermelho.setAttribute("direcao", "mudar a direçao cima");
@@ -128,23 +94,231 @@ function movimentarFantasmaVermelho() {
         else if (direcaoDoVermelho === "baixo") {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoVermelho + 28);
             if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
-                if (fantasmaVermelho.parentElement.classList.contains("pacDot")) adicionarERemoverPowerPelletsEPacDots("pacDot", fantasmaVermelho);
-                if (fantasmaVermelho.parentElement.classList.contains("powerPellet")) adicionarERemoverPowerPelletsEPacDots("powerPellet", fantasmaVermelho);
-
-                if (grid.children[posicaoAtualDoVermelho + 28].length !== 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-baixo.png";
-                    grid.children[posicaoAtualDoVermelho + 28].innerHTML = "";
-                    grid.children[posicaoAtualDoVermelho + 28].appendChild(fantasmaVermelho);
-                    fantasmaVermelho.setAttribute("direcao", "baixo");
-                }
+                fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-baixo.png";
+                grid.children[posicaoAtualDoVermelho + 28].appendChild(fantasmaVermelho);
+                fantasmaVermelho.setAttribute("direcao", "baixo");
             }
             if (grid.children[quadradosPretos[futuraPosicao] + 28].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] + 28].classList.contains("covilDosFantasmas")) {
                 fantasmaVermelho.setAttribute("direcao", "mudar a direçao baixo");
             }
         }
-    }, 600);
+    }, 300);
 };
-//movimentarFantasmaVermelho();
+movimentarFantasmaVermelho();
+
+
+
+
+
+//TODO: RESOLVER BUG DO FANTASMA ROSA DA LINHA 189
+function movimentarFantasmaRosa() {
+    var fantasmaRosaEmMovimento = setInterval(() => {
+        let posicaoAtualDoRosa = Number(fantasmaRosa.parentElement.id);
+        let direcaoDoRosa = fantasmaRosa.getAttribute("direcao");
+        let possiveisQuadradosParaRosa = [];
+
+        if (direcaoDoRosa !== "mudar a direcao direita" && direcaoDoRosa !== "direita" && direcaoDoRosa !== "esquerda" && quadradosPretos.indexOf(posicaoAtualDoRosa + 1) !== -1) {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa + 1);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                possiveisQuadradosParaRosa.push("direita");
+            }
+        }
+        if (direcaoDoRosa !== "mudar a direcao esquerda" && direcaoDoRosa !== "direita" && direcaoDoRosa !== "esquerda" && quadradosPretos.indexOf(posicaoAtualDoRosa - 1) !== -1) {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa - 1);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                possiveisQuadradosParaRosa.push("esquerda");
+            }
+        }
+        if (direcaoDoRosa !== "mudar a direcao cima" && direcaoDoRosa !== "baixo" && direcaoDoRosa !== "cima" && direcaoDoRosa !== "cima" && quadradosPretos.indexOf(posicaoAtualDoRosa - 28) !== -1) {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa - 28);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                possiveisQuadradosParaRosa.push("cima");
+            }
+        }
+        if (direcaoDoRosa !== "mudar a direcao baixo" && direcaoDoRosa !== "baixo" && direcaoDoRosa !== "cima" && quadradosPretos.indexOf(posicaoAtualDoRosa + 28) !== -1) {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa + 28);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                possiveisQuadradosParaRosa.push("baixo");
+            }
+        }
+
+
+        if (possiveisQuadradosParaRosa.length !== 0) {
+            let direcoes = ["direita", "esquerda", "cima", "baixo"];
+            if (direcoes.includes(direcaoDoRosa)) possiveisQuadradosParaRosa.push(direcaoDoRosa);
+
+            let sortearFuturoQuadrado = Math.floor(Math.random() * possiveisQuadradosParaRosa.length);
+            direcaoDoRosa = possiveisQuadradosParaRosa[sortearFuturoQuadrado];
+        }
+
+        if (direcaoDoRosa === "esquerda") {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa - 1);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-rosa-esquerda.png";                    
+                grid.children[posicaoAtualDoRosa - 1].appendChild(fantasmaRosa);
+                fantasmaRosa.setAttribute("direcao", "esquerda");
+            }
+            if (grid.children[quadradosPretos[futuraPosicao] - 1].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] - 1].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.setAttribute("direcao", "mudar a direçao esquerda");
+            }
+        }
+        else if (direcaoDoRosa === "direita") {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa + 1);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-rosa-direita.png";
+                grid.children[posicaoAtualDoRosa + 1].appendChild(fantasmaRosa);
+                fantasmaRosa.setAttribute("direcao", "direita");
+            }
+            if (grid.children[quadradosPretos[futuraPosicao] + 1].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] + 1].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.setAttribute("direcao", "mudar a direçao direita");
+            }
+        }
+        else if (direcaoDoRosa === "cima") {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa - 28);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-rosa-cima.png";
+                grid.children[posicaoAtualDoRosa - 28].appendChild(fantasmaRosa);
+                fantasmaRosa.setAttribute("direcao", "cima");
+            }
+            if (grid.children[quadradosPretos[futuraPosicao] - 28].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] - 28].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.setAttribute("direcao", "mudar a direçao cima");
+            }
+        }
+        else if (direcaoDoRosa === "baixo") {
+            let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa + 28);
+            if (!grid.children[quadradosPretos[futuraPosicao]].classList.contains("parede") && !grid.children[quadradosPretos[futuraPosicao]].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-rosa-baixo.png";
+                grid.children[posicaoAtualDoRosa + 28].appendChild(fantasmaRosa);
+                fantasmaRosa.setAttribute("direcao", "baixo");
+            }
+            if (grid.children[quadradosPretos[futuraPosicao] + 28].classList.contains("parede") || grid.children[quadradosPretos[futuraPosicao] + 28].classList.contains("covilDosFantasmas")) {
+                fantasmaRosa.setAttribute("direcao", "mudar a direçao baixo");
+            }
+        }
+    }, 300);
+};
+
+
+function sairDoCovilEmInicioDoJogo() {
+    let ordemDosQuadrados = [28, 1, -28, -1];
+    let autorizarSaidaDoFantasmaRosa = false;
+    let autorizarSaidaDoFantasmaCiano = false;
+    let autorizarSaidaDoFantasmaAmarelo = false;
+    let proximaCasa = 0;
+    
+    //autorizar a saida do fantasma rosa
+    let saidaDoFantasmaRosa = setTimeout(() => {
+        autorizarSaidaDoFantasmaRosa = true;
+    }, 1000);
+
+    //autorizar a saida do fantasma ciano
+    let saidaDoFantasmaCiano = setTimeout(() => {
+        autorizarSaidaDoFantasmaCiano = true;
+    }, 7000);
+
+    //autorizar a saida do fantasma amarelo
+    let saidaDoFantasmaAmarelo = setTimeout(() => {
+        autorizarSaidaDoFantasmaAmarelo = true;
+    }, 15250);
+
+    let movimentacaoDoRosaDentroDoCovil = setInterval(() => {
+        if (proximaCasa > 3) {
+            proximaCasa = 0;
+        }
+
+        //movimentação apenas do fantasma rosa
+        let idDivPaiRosa = Number(fantasmaRosa.parentElement.id);
+
+        //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO ROSA, MESMO COM A CONTINUIDADE DO INTERVALO
+        if (autorizarSaidaDoFantasmaRosa !== undefined) {
+            if (!autorizarSaidaDoFantasmaRosa) {
+                grid.children[idDivPaiRosa + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaRosa)
+            } else {
+                if (!grid.children[idDivPaiRosa - 28].classList.contains("parede")) {
+                    grid.children[idDivPaiRosa - 28].appendChild(fantasmaRosa);
+                } else {
+                    autorizarSaidaDoFantasmaRosa = undefined;                    
+                    chamarFuncaoDeMovimentacao("fantasmaRosa");
+                };
+            };
+        };
+
+        //movimentação apenas do fantasma ciano
+        let idDivPaiCiano = Number(fantasmaCiano.parentElement.id);
+
+    
+        //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO CIANO, MESMO COM A CONTINUIDADE DO INTERVALO
+        if (autorizarSaidaDoFantasmaCiano !== undefined) {
+            if (!autorizarSaidaDoFantasmaCiano) {
+                grid.children[idDivPaiCiano + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaCiano)
+            } else {
+                if (grid.children[idDivPaiCiano].id == 348) {
+                    grid.children[idDivPaiCiano + 1].appendChild(fantasmaCiano);
+                }
+                else if (!grid.children[idDivPaiCiano - 28].classList.contains("parede")) {
+                    grid.children[idDivPaiCiano - 28].appendChild(fantasmaCiano);
+                } else {
+                    autorizarSaidaDoFantasmaCiano = undefined;
+                    chamarFuncaoDeMovimentacao("fantasmaCiano");
+                };
+            };
+        };
+
+        //movimentação apenas do fantasma amarelo
+        let idDivPaiAmarelo = Number(fantasmaAmarelo.parentElement.id);
+
+        //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO AMARELO, MESMO COM A CONTINUIDADE DO INTERVALO
+        if (autorizarSaidaDoFantasmaAmarelo !== undefined) {
+            if (!autorizarSaidaDoFantasmaAmarelo) {
+                grid.children[idDivPaiAmarelo + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaAmarelo)
+            } else {
+                if (grid.children[idDivPaiAmarelo].id == 351) {
+                    grid.children[idDivPaiAmarelo - 1].appendChild(fantasmaAmarelo);
+                }
+                else if (!grid.children[idDivPaiAmarelo - 28].classList.contains("parede")) {
+                    grid.children[idDivPaiAmarelo - 28].appendChild(fantasmaAmarelo);
+                } else {
+                    autorizarSaidaDoFantasmaAmarelo = undefined;
+                    chamarFuncaoDeMovimentacao("fantasmaAmarelo");
+                };
+            };
+        };
+
+        proximaCasa++;
+
+        //PARAR INTERVALO
+        if (autorizarSaidaDoFantasmaRosa && autorizarSaidaDoFantasmaCiano && autorizarSaidaDoFantasmaAmarelo) {
+            pararIntervalo();
+        }
+    }, 250);
+
+    //INICIO DE MOVIMENTACÇÃO DE CADA FANTASMA
+    function chamarFuncaoDeMovimentacao(fantasmaAtual) {
+        if (fantasmaAtual === "fantasmaRosa") {
+            movimentarFantasmaRosa();
+        }
+        else if (fantasmaAtual === "fantasmaCiano") {
+            console.log("movimentarFantasmaCiano");
+            //movimentarFantasmaCiano();
+        }
+        else if (fantasmaAtual === "fantasmaAmarelo") {
+            console.log("movimentarFantasmaAmarelo");
+            //movimentarFantasmaAmarelo();
+        } else return;
+    };
+
+    //PARADA DO INTERVALO
+    function pararIntervalo() {
+        clearInterval(movimentacaoDoRosaDentroDoCovil);
+    };
+};
+sairDoCovilEmInicioDoJogo();
+
+
+
+
+
+
 
 
 //MOVIMENTAR PACMAN.
