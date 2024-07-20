@@ -2,7 +2,7 @@ import { quadradosPretos } from "./criacao.js";
 var grid = document.querySelector(".grid");
 var score = document.querySelector(".score");
 var level = document.querySelector(".level");
-var quantidadeDeVidas = document.querySelectorAll(".vidas");
+var quantidadeDeVidas = document.querySelector(".quantidade-de-vidas");
 var pacman = document.querySelector(".grid .pacman");
 var fantasmaVermelho = document.querySelector(".grid .fantasma-vermelho");
 var fantasmaCiano = document.querySelector(".grid .fantasma-ciano");
@@ -11,6 +11,71 @@ var fantasmaAmarelo = document.querySelector(".grid .fantasma-amarelo");
 var intervaloAtual = null;
 var contadorDeIntervalos = 0;
 var pararMovimentacaoEComecarDeNovo = false;
+var matouPacman = false;
+
+// FIM DE JOGO: VITÓRIA OU DERROTA
+function gameOver(condicao) {
+    console.log(condicao)
+    if (condicao === "derrota") {
+        let resposta = confirm("Você perdeu!\n Deseja jogar novamente?");
+
+        if (resposta) {
+            location.reload();
+        } else {
+            window.close();
+            // Mensagem de backup caso a aba não seja fechada
+            alert("Se a aba não fechar automaticamente, por favor, feche-a manualmente.");            
+        }
+
+    }
+}
+
+//AVERIGUAR SE ALGUM FANTASMA ESTÁ NO MESMO QUADRADO QUE O PACMAN
+/*
+  OBS.: COMO O PACMAN NÃO FICA EM UM INTERVALO ETERNO, COMPARADO AOS FANTASMAS, É NECESSÁRIO COLOCAR
+  O QUE IRÁ ACONTECER COM O PACMAN AQUI, POIS, O FANTASMA PODE ALCANÇAR O PACMAN SEM ESTAR EM MOVIMENTO, 
+  QUANDO O INTERVALO DE MOVIMENTO DO PACMAN ESTAR ATIVO.
+*/
+
+function chamarFuncaoMatarPacman() {
+    matarPacman();
+}
+
+function matarPacman() {
+    var averiguar = setInterval(() => {
+        if (pacman.parentElement.contains(fantasmaVermelho) || pacman.parentElement.contains(fantasmaRosa) ||
+            pacman.parentElement.contains(fantasmaCiano) || pacman.parentElement.contains(fantasmaAmarelo)) {   
+            console.log(true)
+            pararMovimentacaoEComecarDeNovo = true;
+            voltarAoInicioPacman();
+        }
+    }, 100);
+
+    function voltarAoInicioPacman() {
+        clearInterval(averiguar);
+
+        setTimeout(() => {
+            pacman.src = "Direçoes para o pacman/pacman-normal.png";        
+            grid.children[489].appendChild(pacman);
+            console.log(quantidadeDeVidas.children.length);
+            console.log("dsfakjk")
+            if (quantidadeDeVidas.children.length > 0) {
+                quantidadeDeVidas.removeChild(quantidadeDeVidas.children[0]);
+                pararMovimentacaoEComecarDeNovo = false;
+                console.log("comecar de novo")
+                movimentarFantasmaVermelho();
+                sairDoCovilEmInicioDoJogo();
+            }    
+            else {
+                console.log("derrota 2")
+                gameOver("derrota");
+            }
+
+            chamarFuncaoMatarPacman();
+        }, 1000);
+    }    
+}
+matarPacman();
 
 //ADICIONAR EFEITO POWER-PELLET NOS FANTASMAS
 function mudarAparenciaDosFantasmas() {
@@ -61,18 +126,36 @@ function mudarAparenciaDosFantasmas() {
 }
 
 //EM ANDAMENTO: MOVIMENTAÇÃO DOS FANTASMAS (FALTA O CIANO E AMARELO)
-//TODO: QUANDO O PACMAN TIVER COMIDO 60 PAC-DOTS, FAÇA COM QUE TODOS OS FANTASMAS VÁ DIRETAMENTE ATRÁS DO PACMAN
 //FEITO: FUNCIONALIDADE PARA QUANDO O PACMAN COMER O POWER-PELLET (efeito dura 7 segundos)
-//TODO: MATAR PACMAN
-//TODO: FANTASMA MORRER, RETORNAR AO COVIL E DEPOIS SAIR DO COVIL 
+//FEITO / FASE PARA TESTE: MATAR PACMAN
 //FEITO: FANTASMAS CONSEGUIR IR DO 391 AO 364, E VICE-VERSA
+//TODO: FANTASMA MORRER, RETORNAR AO COVIL E DEPOIS SAIR DO COVIL 
+//TODO: QUANDO O PACMAN TIVER COMIDO 60 PAC-DOTS, FAÇA COM QUE TODOS OS FANTASMAS VÁ DIRETAMENTE ATRÁS DO PACMAN
 function movimentarFantasmaVermelho() {
     var velocidadeDoFantasma = 250;
+    console.log("movimentarFantasmaVermelho");
+
+    function pararMovimentacao() {
+        clearInterval(fantasmaVermelhoEmMovimento);
+        clearInterval(pararLoop);
+        if (pararMovimentacaoEComecarDeNovo) {
+            setTimeout(() => {
+                grid.children[294].appendChild(fantasmaVermelho);
+                fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";
+                fantasmaVermelho.setAttribute("direcao", "direita");
+            }, 1000);
+        };
+    };
 
     var fantasmaVermelhoEmMovimento = setInterval(() => {
         let posicaoAtualDoVermelho = Number(fantasmaVermelho.parentElement.id);
         let direcaoDoVermelho = fantasmaVermelho.getAttribute("direcao");
         let possiveisQuadradosParaVermelho = [];
+
+        //SE O FANTASMA TIVER MATADO O FANTASMA, ENTÃO COMECE DE NOVO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }*/
 
         if (direcaoDoVermelho !== "mudar a direcao direita" && direcaoDoVermelho !== "direita" && direcaoDoVermelho !== "esquerda" && quadradosPretos.indexOf(posicaoAtualDoVermelho + 1) !== -1) {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoVermelho + 1);
@@ -178,12 +261,23 @@ function movimentarFantasmaVermelho() {
         }
 
         //DEIXAR O FANTASMA COM LENTIDÃO, POR CONTA DO EFEITO POWER-PELLET
-        if (fantasmaRosa.getAttribute("efeito-do-power-pellet") === "true") {
+        if (fantasmaVermelho.getAttribute("efeito-do-power-pellet") === "true") {
             velocidadeDoFantasma = 500;
         } else {
             velocidadeDoFantasma = 250;;
         }
+
+        //SE O FANTASMA TIVER MATADO O FANTASMA, ENTÃO COMECE DE NOVO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }*/
     }, velocidadeDoFantasma);
+
+    let pararLoop = setInterval(() => {
+        if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }
+    }, 200);
 };
 movimentarFantasmaVermelho();
 
@@ -195,10 +289,30 @@ movimentarFantasmaVermelho();
 function movimentarFantasmaRosa() {
     var velocidadeDoFantasma = 250;
 
+    function pararMovimentacao() {
+        clearInterval(fantasmaRosaEmMovimento);
+        clearInterval(pararLoop);        
+        console.log("parar")
+        if (pararMovimentacaoEComecarDeNovo) {
+            setTimeout(() => {
+                grid.children[349].appendChild(fantasmaRosa);
+                fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-rosa-baixo.png";
+                fantasmaRosa.setAttribute("direcao", "esquerda");
+                console.log("2");
+            }, 1000);
+        };
+    };
+
     var fantasmaRosaEmMovimento = setInterval(() => {
         let posicaoAtualDoRosa = Number(fantasmaRosa.parentElement.id);
         let direcaoDoRosa = fantasmaRosa.getAttribute("direcao");
         let possiveisQuadradosParaRosa = [];
+
+        //SE O FANTASMA TIVER MATADO O FANTASMA, ENTÃO COMECE DE NOVO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }*/
+
 
         if (direcaoDoRosa !== "mudar a direcao direita" && direcaoDoRosa !== "direita" && direcaoDoRosa !== "esquerda" && quadradosPretos.indexOf(posicaoAtualDoRosa + 1) !== -1) {
             let futuraPosicao = quadradosPretos.indexOf(posicaoAtualDoRosa + 1);
@@ -313,11 +427,23 @@ function movimentarFantasmaRosa() {
         } else {
             velocidadeDoFantasma = 250;;
         }
+
+        //SE O FANTASMA TIVER MATADO O FANTASMA, ENTÃO COMECE DE NOVO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }*/
     }, velocidadeDoFantasma);
+
+    let pararLoop = setInterval(() => {
+        if (pararMovimentacaoEComecarDeNovo) {
+            pararMovimentacao();
+        }
+    }, 200);
 };
 
 
 function sairDoCovilEmInicioDoJogo() {
+    console.log("sairDoCovilEmInicioDoJogo")
     let ordemDosQuadrados = [28, 1, -28, -1];
     let autorizarSaidaDoFantasmaRosa = false;
     let autorizarSaidaDoFantasmaCiano = false;
@@ -343,6 +469,11 @@ function sairDoCovilEmInicioDoJogo() {
     let movimentaçaoDosFantasmasNoCovil = setInterval(() => {
         if (proximaCasa > 3) {
             proximaCasa = 0;
+        }
+
+
+        if (pararMovimentacaoEComecarDeNovo) {
+            pararIntervalo();
         }
 
         //movimentação apenas do fantasma rosa
@@ -428,7 +559,29 @@ function sairDoCovilEmInicioDoJogo() {
 
     //PARADA DO INTERVALO
     function pararIntervalo() {
-        clearInterval(movimentaçaoDosFantasmasNoCovil);
+        if (!pararMovimentacaoEComecarDeNovo) {
+        clearInterval(movimentaçaoDosFantasmasNoCovil);            
+        }
+        else if (pararMovimentacaoEComecarDeNovo) {
+            clearInterval(movimentaçaoDosFantasmasNoCovil);
+
+            setTimeout(() => {
+            if (!autorizarSaidaDoFantasmaRosa && !grid.children[349].contains(fantasmaRosa)) {
+                grid.children[349].appendChild(fantasmaRosa);
+                fantasmaRosa.setAttribute("direcao", "esquerda");
+                console.log("1");
+            }
+            if (!autorizarSaidaDoFantasmaCiano && !grid.children[347].contains(fantasmaCiano)) {
+                grid.children[347].appendChild(fantasmaCiano);
+                fantasmaCiano.setAttribute("direcao", "esquerda");
+            }            
+            if (!autorizarSaidaDoFantasmaAmarelo && !grid.children[351].contains(fantasmaAmarelo)) {
+                grid.children[351].appendChild(fantasmaAmarelo);
+                fantasmaAmarelo.setAttribute("direcao", "esquerda");
+            }
+                
+            }, 1000);
+        }
     };
 };
 sairDoCovilEmInicioDoJogo();
@@ -449,7 +602,11 @@ function movimentoDoPacman(proximaDiv) {
         if (contadorDeIntervalos > 1) {
             contadorDeIntervalos = 1;
             clearInterval(intervaloAtual);
-        };
+        }
+        else if (pararMovimentacaoEComecarDeNovo) {
+            clearInterval(intervaloAtual);
+        }
+
     };
     pararIntervalo();
 
@@ -458,6 +615,12 @@ function movimentoDoPacman(proximaDiv) {
     QUANDO A FUNÇÃO FOR CHAMADA OUTRA VEZ, PARA A DIREÇÃO DO PACMAN*/
     intervaloAtual = setInterval(() => {
         let idDivPaiDoPacman = Number(pacman.parentElement.id);
+
+        //SE O PACMAN ESTIVER SIDO MORTO PELO FANTASMA, ENTÃO PARE O INTERVALO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararIntervalo();
+        }*/
+
 
         if (idDivPaiDoPacman === 364) {
             grid.children[391].appendChild(pacman);
@@ -497,7 +660,18 @@ function movimentoDoPacman(proximaDiv) {
         else if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("parede")) {
             pararIntervalo();
         }
+
+        //SE O PACMAN ESTIVER SIDO MORTO PELO FANTASMA, ENTÃO PARE O INTERVALO
+        /*if (pararMovimentacaoEComecarDeNovo) {
+            pararIntervalo();
+        }*/
     }, 250);
+
+    let pararLoop = setInterval(() => {
+        if (pararMovimentacaoEComecarDeNovo) {
+            pararIntervalo();
+        }
+    }, 100);
 
     function decidirLadoDoPacman(idDivPaiDoPacman) {
 
@@ -528,19 +702,27 @@ function movimentoDoPacman(proximaDiv) {
 document.addEventListener('keyup', function moverPacMan(event) {
     switch (event.key) {
         case "ArrowUp":
-            movimentoDoPacman(-28);
+            if (!pararMovimentacaoEComecarDeNovo) {
+                movimentoDoPacman(-28);
+            } else return;
             break;
         
         case "ArrowDown":
-            movimentoDoPacman(28);
+            if (!pararMovimentacaoEComecarDeNovo) {
+                movimentoDoPacman(28);
+            } else return;
             break;
         
         case "ArrowRight":
-            movimentoDoPacman(1);
+            if (!pararMovimentacaoEComecarDeNovo) {
+                movimentoDoPacman(1);
+            } else return;
             break;
         
         case "ArrowLeft":
+            if (!pararMovimentacaoEComecarDeNovo) {
             movimentoDoPacman(-1);
+            } else return;
             break;
     };
 });
