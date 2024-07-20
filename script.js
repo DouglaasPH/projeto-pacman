@@ -879,32 +879,12 @@ function sairDoCovilEmInicioDoJogo() {
     let autorizarSaidaDoFantasmaCiano = false;
     let autorizarSaidaDoFantasmaAmarelo = false;
     let proximaCasa = 0;
-    let chamarFuncaoDeAutorizacao = true;
-
-    function autorizarSaidaDosFantasmas() {
-        //autorizar a saida do fantasma rosa
-        let saidaDoFantasmaRosa = setTimeout(() => {
-            autorizarSaidaDoFantasmaRosa = true;
-        }, 1000);
-
-        //autorizar a saida do fantasma ciano
-        let saidaDoFantasmaCiano = setTimeout(() => {
-            autorizarSaidaDoFantasmaCiano = true;
-        }, 6500);
-
-        //autorizar a saida do fantasma amarelo
-        let saidaDoFantasmaAmarelo = setTimeout(() => {
-            autorizarSaidaDoFantasmaAmarelo = true;
-        }, 15750);
-    };
+    let voltasConcluida = 0;
 
     let movimentaçaoDosFantasmasNoCovil = setInterval(() => {
-        if (chamarFuncaoDeAutorizacao) {
-            chamarFuncaoDeAutorizacao = false;
-            autorizarSaidaDosFantasmas();
-        }
         if (proximaCasa > 3) {
             proximaCasa = 0;
+            voltasConcluida++;
         }
 
 
@@ -916,17 +896,17 @@ function sairDoCovilEmInicioDoJogo() {
         let idDivPaiRosa = Number(fantasmaRosa.parentElement.id);
 
         //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO ROSA, MESMO COM A CONTINUIDADE DO INTERVALO
-        if (autorizarSaidaDoFantasmaRosa !== undefined) {
-            if (!autorizarSaidaDoFantasmaRosa) {
-                grid.children[idDivPaiRosa + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaRosa);
-            } else {
-                if (!grid.children[idDivPaiRosa - 28].classList.contains("parede")) {
-                    grid.children[idDivPaiRosa - 28].appendChild(fantasmaRosa);
-                } else {
-                    autorizarSaidaDoFantasmaRosa = undefined;
-                    chamarFuncaoDeMovimentacao("fantasmaRosa");
-                };
+        if (voltasConcluida === 0) {
+            grid.children[idDivPaiRosa + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaRosa);
+        }
+        if (voltasConcluida === 1 && (proximaCasa === 0 || proximaCasa === 1)) {
+            if (!grid.children[idDivPaiRosa - 28].classList.contains("parede")) {
+                grid.children[idDivPaiRosa - 28].appendChild(fantasmaRosa);
             };
+        }
+        if (voltasConcluida === 1 && proximaCasa === 1) {
+            autorizarSaidaDoFantasmaRosa = true;
+            movimentarFantasmaRosa();
         };
 
         //movimentação apenas do fantasma ciano
@@ -934,41 +914,37 @@ function sairDoCovilEmInicioDoJogo() {
 
     
         //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO CIANO, MESMO COM A CONTINUIDADE DO INTERVALO
-        if (autorizarSaidaDoFantasmaCiano !== undefined) {
-            if (!autorizarSaidaDoFantasmaCiano) {
-                grid.children[idDivPaiCiano + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaCiano);
-            } else {
-                if (grid.children[idDivPaiCiano].id == 348) {
-                    grid.children[idDivPaiCiano + 1].appendChild(fantasmaCiano);
-                }
-                else if (!grid.children[idDivPaiCiano - 28].classList.contains("parede")) {
-                    grid.children[idDivPaiCiano - 28].appendChild(fantasmaCiano);
-                } else {
-                    autorizarSaidaDoFantasmaCiano = undefined;
-                    chamarFuncaoDeMovimentacao("fantasmaCiano");
-                };
-            };
-        };
+        if (voltasConcluida < 7) {
+            grid.children[idDivPaiCiano + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaCiano);
+        }
+        else if (voltasConcluida === 7 && proximaCasa < 2) {
+            grid.children[idDivPaiCiano + 1].appendChild(fantasmaCiano);
+        }
+        else if (voltasConcluida === 7 && (proximaCasa === 2 || proximaCasa === 3)) {
+            grid.children[idDivPaiCiano - 28].appendChild(fantasmaCiano);
+        }
+        if (voltasConcluida === 7 && proximaCasa === 3) {
+            autorizarSaidaDoFantasmaCiano = true;
+            movimentarFantasmaCiano();
+        }
 
         //movimentação apenas do fantasma amarelo
         let idDivPaiAmarelo = Number(fantasmaAmarelo.parentElement.id);
 
         //DEPOIS DE SAIR DO COVIL, NÃO IRÁ PEGAR MAIS NENHUMA DESSAS CONDICIONAIS DO AMARELO, MESMO COM A CONTINUIDADE DO INTERVALO
-        if (autorizarSaidaDoFantasmaAmarelo !== undefined) {
-            if (!autorizarSaidaDoFantasmaAmarelo) {
-                grid.children[idDivPaiAmarelo + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaAmarelo)
-            } else {
-                if (grid.children[idDivPaiAmarelo].id == 351) {
-                    grid.children[idDivPaiAmarelo - 1].appendChild(fantasmaAmarelo);
-                }
-                else if (!grid.children[idDivPaiAmarelo - 28].classList.contains("parede")) {
-                    grid.children[idDivPaiAmarelo - 28].appendChild(fantasmaAmarelo);
-                } else {
-                    autorizarSaidaDoFantasmaAmarelo = undefined;
-                    chamarFuncaoDeMovimentacao("fantasmaAmarelo");
-                };
-            };
-        };
+        if (voltasConcluida < 15) {
+            grid.children[idDivPaiAmarelo + ordemDosQuadrados[proximaCasa]].appendChild(fantasmaAmarelo);
+        }
+        else if (voltasConcluida === 15 && proximaCasa < 1) {
+            grid.children[idDivPaiAmarelo - 1].appendChild(fantasmaAmarelo);
+        }
+        else if (voltasConcluida === 15 && (proximaCasa === 2 || proximaCasa === 3)) {
+            grid.children[idDivPaiAmarelo - 28].appendChild(fantasmaAmarelo);
+        }
+        if (voltasConcluida === 15 && proximaCasa === 3) {
+            autorizarSaidaDoFantasmaAmarelo = true;
+            movimentarFantasmaAmarelo();
+        }
 
         proximaCasa++;
 
@@ -976,20 +952,7 @@ function sairDoCovilEmInicioDoJogo() {
         if (autorizarSaidaDoFantasmaRosa && autorizarSaidaDoFantasmaCiano && autorizarSaidaDoFantasmaAmarelo) {
             pararIntervalo();
         }
-    }, 250);
-
-    //INICIO DE MOVIMENTACÇÃO DE CADA FANTASMA
-    function chamarFuncaoDeMovimentacao(fantasmaAtual) {
-        if (fantasmaAtual === "fantasmaRosa") {
-            movimentarFantasmaRosa();
-        }
-        else if (fantasmaAtual === "fantasmaCiano") {
-            movimentarFantasmaCiano();
-        }
-        else if (fantasmaAtual === "fantasmaAmarelo") {
-            movimentarFantasmaAmarelo();
-        } else return;
-    };
+    }, 200);
 
     //PARADA DO INTERVALO
     function pararIntervalo() {
