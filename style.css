@@ -14,8 +14,8 @@ body {
 
 .placar {
     display: flex;
-    justify-content: space-evenly;
-    width: 41%;
+    justify-content: center;
+    width: 560px;
     color: white;
     font-size: 3vh;
     font-family: "Exo 2", sans-serif;
@@ -27,8 +27,8 @@ body {
 }
 
 .quantidade-de-vidas {
-    width: 40.5%;
-    height: 1%;
+    width: 553px;
+    height: 19px;
     background-color: black;
     padding-left: 15px;
 
