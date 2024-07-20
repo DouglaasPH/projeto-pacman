@@ -12,6 +12,10 @@ var intervaloAtual = null;
 var contadorDeIntervalos = 0;
 var pararMovimentacaoEComecarDeNovo = false;
 var matouPacman = false;
+var fantasmaVermelhoMorto = false;
+var fantasmaRosaMorto = false;
+var fantasmaCianoMorto = false;
+var fantasmaAmareloMorto = false;
 
 // FIM DE JOGO: VITÓRIA OU DERROTA
 function gameOver(condicao) {
@@ -30,6 +34,11 @@ function gameOver(condicao) {
     }
 }
 
+//SE O PACMAN TIVER MATADO ALGUM FANTASMA, ENTÃO REALIZE A ANIMAÇÃO PARA O FANTASMA VOLTAR AO COVIL
+function matarFantasma(fantasma) {
+}
+
+
 //AVERIGUAR SE ALGUM FANTASMA ESTÁ NO MESMO QUADRADO QUE O PACMAN
 /*
   OBS.: COMO O PACMAN NÃO FICA EM UM INTERVALO ETERNO, COMPARADO AOS FANTASMAS, É NECESSÁRIO COLOCAR
@@ -43,11 +52,38 @@ function chamarFuncaoMatarPacman() {
 
 function matarPacman() {
     var averiguar = setInterval(() => {
-        if (pacman.parentElement.contains(fantasmaVermelho) || pacman.parentElement.contains(fantasmaRosa) ||
-            pacman.parentElement.contains(fantasmaCiano) || pacman.parentElement.contains(fantasmaAmarelo)) {   
+        /*SE O PACMAN ESTIVER NO MESMO QUADRADO E OS FANTASMAS NÃO ESTIVEREM COM O EFEITO DO POWER-PELLET,
+          ENTÃO RECOMECE NOVAMENTE*/
+        if ((pacman.parentElement.contains(fantasmaVermelho) || pacman.parentElement.contains(fantasmaRosa) ||
+            pacman.parentElement.contains(fantasmaCiano) || pacman.parentElement.contains(fantasmaAmarelo)) &&
+            (fantasmaVermelho.getAttribute("efeito-do-power-pellet") === "false" ||
+            fantasmaRosa.getAttribute("efeito-do-power-pellet") === "false" ||
+            fantasmaCiano.getAttribute("efeito-do-power-pellet") === "false" ||
+            fantasmaAmarelo.getAttribute("efeito-do-power-pellet") === "false")) {   
             console.log(true)
             pararMovimentacaoEComecarDeNovo = true;
             voltarAoInicioPacman();
+        }
+        /*MAS SE O PACMAN ESTIVER NO MESMO QUADRADO QUE ALGUM FANTASMA E ELES ESTIVEREM COM O EFEITO POWER-PELLET,
+          FAÇA COM QUE O FANTASMA RETORNE AO COVIL DE FANTASMAS*/
+        else if ((pacman.parentElement.contains(fantasmaVermelho) || pacman.parentElement.contains(fantasmaRosa) ||
+            pacman.parentElement.contains(fantasmaCiano) || pacman.parentElement.contains(fantasmaAmarelo)) &&
+            (fantasmaVermelho.getAttribute("efeito-do-power-pellet") === "true" ||
+            fantasmaRosa.getAttribute("efeito-do-power-pellet") === "true" ||
+            fantasmaCiano.getAttribute("efeito-do-power-pellet") === "true" ||
+                fantasmaAmarelo.getAttribute("efeito-do-power-pellet") === "true")) {
+            if (pacman.parentElement.contains(fantasmaVermelho)) {
+                fantasmaVermelhoMorto = true;
+            }
+            else if (pacman.parentElement.contains(fantasmaRosa)) {
+                fantasmaRosaMorto = true;
+            }
+            else if (pacman.parentElement.contains(fantasmaCiano)) {
+                fantasmaCianoMorto = true;
+            }
+            else if (pacman.parentElement.contains(fantasmaAmarelo)) {
+                fantasmaAmareloMorto = true;
+            };
         }
     }, 100);
 
@@ -79,11 +115,30 @@ matarPacman();
 
 //ADICIONAR EFEITO POWER-PELLET NOS FANTASMAS
 function mudarAparenciaDosFantasmas() {
-    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-    fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-    fantasmaCiano.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-    fantasmaAmarelo.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
     let voltarAparenciaNormal = false;
+    let mudarAparenciaDeQuaisFantasmas = [];
+
+    //SE O FANTASMA ESTIVER NO COVIL, O EFEITO POWER-PELLET NÃO O ATINGE
+    if (!fantasmaVermelho.parentElement.classList.contains("covilDosFantasmas")) {
+        fantasmaVermelho.setAttribute("efeito-do-power-pellet", true);
+        fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+        mudarAparenciaDeQuaisFantasmas.push(fantasmaVermelho);
+    };
+    if (!fantasmaRosa.parentElement.classList.contains("covilDosFantasmas")) {
+        fantasmaRosa.setAttribute("efeito-do-power-pellet", true);
+        fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+        mudarAparenciaDeQuaisFantasmas.push(fantasmaRosa);
+    };
+    if (!fantasmaCiano.parentElement.classList.contains("covilDosFantasmas")) {
+        fantasmaCiano.setAttribute("efeito-do-power-pellet", true);
+        fantasmaCiano.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+        mudarAparenciaDeQuaisFantasmas.push(fantasmaCiano);
+    };
+    if (!fantasmaAmarelo.parentElement.classList.contains("covilDosFantasmas")) {
+        fantasmaAmarelo.setAttribute("efeito-do-power-pellet", true);
+        fantasmaAmarelo.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+        mudarAparenciaDeQuaisFantasmas.push(fantasmaAmarelo);
+    };    
 
     //ALTERNAR COR ENTRE AZUL E BRANCO
     function alternarCorDoFantasma() {
@@ -95,16 +150,14 @@ function mudarAparenciaDosFantasmas() {
         let alternanciaDeCor = setInterval(() => {
             if (!voltarAparenciaNormal) {
                 if (contador % 2 !== 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-amedrontado-branco.png";
-                    fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-amedrontado-branco.png";
-                    fantasmaCiano.src = "Direçoes para os fantasmas/fantasma-amedrontado-branco.png";
-                    fantasmaAmarelo.src = "Direçoes para os fantasmas/fantasma-amedrontado-branco.png";
+                    mudarAparenciaDeQuaisFantasmas.forEach(fantasmaAtual => {
+                        fantasmaAtual.src = "Direçoes para os fantasmas/fantasma-amedrontado-branco.png";
+                    });
                 }
                 else if (contador % 2 === 0) {
-                    fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-                    fantasmaRosa.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-                    fantasmaCiano.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
-                    fantasmaAmarelo.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+                    mudarAparenciaDeQuaisFantasmas.forEach(fantasmaAtual => {
+                        fantasmaAtual.src = "Direçoes para os fantasmas/fantasma-amedrontado-azul.png";
+                    });
                 }
             } else pararIntervalo();
             contador++;
@@ -113,10 +166,9 @@ function mudarAparenciaDosFantasmas() {
 
     //DURAÇÃO DA APARÊNCIA AZUL + TRANSIÇÃO DO BRANCO AO NORMAL
     let duracaoDoEfeito = setTimeout(() => {
-        fantasmaVermelho.setAttribute("efeito-do-power-pellet", false);
-        fantasmaRosa.setAttribute("efeito-do-power-pellet", false);
-        fantasmaCiano.setAttribute("efeito-do-power-pellet", false);
-        fantasmaAmarelo.setAttribute("efeito-do-power-pellet", false);
+        mudarAparenciaDeQuaisFantasmas.forEach(fantasmaAtual => {
+            fantasmaAtual.setAttribute("efeito-do-power-pellet", false);
+        });
         voltarAparenciaNormal = true;
     }, 6000);
 
@@ -138,13 +190,17 @@ function movimentarFantasmaVermelho() {
     function pararMovimentacao() {
         clearInterval(fantasmaVermelhoEmMovimento);
         clearInterval(pararLoop);
+
         if (pararMovimentacaoEComecarDeNovo) {
             setTimeout(() => {
                 grid.children[294].appendChild(fantasmaVermelho);
                 fantasmaVermelho.src = "Direçoes para os fantasmas/fantasma-vermelho-esquerda.png";
                 fantasmaVermelho.setAttribute("direcao", "direita");
             }, 1000);
-        };
+        }
+        else if (fantasmaVermelhoMorto) {
+            //TODO
+        }
     };
 
     var fantasmaVermelhoEmMovimento = setInterval(() => {
@@ -274,7 +330,7 @@ function movimentarFantasmaVermelho() {
     }, velocidadeDoFantasma);
 
     let pararLoop = setInterval(() => {
-        if (pararMovimentacaoEComecarDeNovo) {
+        if (pararMovimentacaoEComecarDeNovo || fantasmaVermelhoMorto) {
             pararMovimentacao();
         }
     }, 200);
@@ -300,7 +356,10 @@ function movimentarFantasmaRosa() {
                 fantasmaRosa.setAttribute("direcao", "esquerda");
                 console.log("2");
             }, 1000);
-        };
+        }
+        else if (fantasmaRosaMorto) {
+            //TODO
+        }
     };
 
     var fantasmaRosaEmMovimento = setInterval(() => {
@@ -435,7 +494,7 @@ function movimentarFantasmaRosa() {
     }, velocidadeDoFantasma);
 
     let pararLoop = setInterval(() => {
-        if (pararMovimentacaoEComecarDeNovo) {
+        if (pararMovimentacaoEComecarDeNovo || fantasmaRosaMorto) {
             pararMovimentacao();
         }
     }, 200);
@@ -651,10 +710,6 @@ function movimentoDoPacman(proximaDiv) {
             grid.children[idDivPaiDoPacman + proximaDiv].classList.remove("powerPellet");
             decidirLadoDoPacman(idDivPaiDoPacman);
             score.innerHTML = Number(score.textContent) + 50;
-            fantasmaVermelho.setAttribute("efeito-do-power-pellet", true);
-            fantasmaRosa.setAttribute("efeito-do-power-pellet", true);
-            fantasmaCiano.setAttribute("efeito-do-power-pellet", true);
-            fantasmaAmarelo.setAttribute("efeito-do-power-pellet", true);
             mudarAparenciaDosFantasmas();
         }
         else if (grid.children[idDivPaiDoPacman + proximaDiv].classList.contains("parede")) {
